@@ -1,0 +1,7 @@
+[Unit]
+Description=hudang - dispatch workflows once (driven by hudang-once.timer)
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/hudang/hudang.env
+ExecStart=/usr/local/bin/hudang --once --config /etc/hudang/config.yaml

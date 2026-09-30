@@ -1,0 +1,18 @@
+# hudang - example configuration
+# Copy to hudang.yaml and adjust. All times are UTC.
+
+# Environment variable that holds the GitHub token (fine-grained PAT with
+# "Actions: Read and write" on the target repositories). Falls back to
+# GITHUB_TOKEN when this variable is unset.
+token_env: HUDANG_GITHUB_TOKEN
+
+# GitHub API base URL; change only for GitHub Enterprise Server.
+api_base: https://api.github.com
+
+jobs:
+  - name: profile-readme
+    repo: itokun99/itokun99
+    workflow: update-readme.yml
+    ref: main
+    schedule: "7,22,37,52 * * * *"
+    enabled: true

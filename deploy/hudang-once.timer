@@ -1,0 +1,10 @@
+[Unit]
+Description=Run hudang dispatches on the off-peak 15-minute schedule
+
+[Timer]
+OnCalendar=*-*-* *:07,22,37,52:00
+Persistent=true
+Unit=hudang-once.service
+
+[Install]
+WantedBy=timers.target

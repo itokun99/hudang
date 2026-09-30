@@ -1,0 +1,22 @@
+[Unit]
+Description=hudang - GitHub Actions workflow dispatcher (daemon mode)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Create /etc/hudang/hudang.env with mode 600 containing: HUDANG_GITHUB_TOKEN=...
+EnvironmentFile=/etc/hudang/hudang.env
+ExecStart=/usr/local/bin/hudang --config /etc/hudang/config.yaml
+Restart=on-failure
+RestartSec=10
+# Recommended: run as a dedicated unprivileged user.
+# User=hudang
+# Group=hudang
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
