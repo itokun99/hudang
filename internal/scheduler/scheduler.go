@@ -24,17 +24,20 @@ func Daemon(ctx context.Context, cfg *config.Config, r *runner.Runner, log *slog
 			log.Info("job disabled, not scheduled", "job", job.Name)
 			continue
 		}
-		entry, err := c.AddFunc(job.Schedule, func() {
+		if _, err := c.AddFunc(job.Schedule, func() {
 			runCtx, cancel := context.WithTimeout(ctx, jobTimeout)
 			defer cancel()
 			if err := r.RunJob(runCtx, job); err != nil {
 				log.Error("job failed", "job", job.Name, "error", err)
 			}
-		})
-		if err != nil {
+		}); err != nil {
 			return fmt.Errorf("schedule job %q: %w", job.Name, err)
 		}
-		log.Info("job scheduled", "job", job.Name, "schedule", job.Schedule, "next_run", c.Entry(entry).Next)
+		sched, err := cron.ParseStandard(job.Schedule)
+		if err != nil {
+			return fmt.Errorf("parse schedule for job %q: %w", job.Name, err)
+		}
+		log.Info("job scheduled", "job", job.Name, "schedule", job.Schedule, "next_run", sched.Next(time.Now()))
 	}
 	c.Start()
 	<-ctx.Done()
